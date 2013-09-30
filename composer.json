@@ -16,5 +16,10 @@
     },
     "autoload": {
         "files": ["autoload.php"]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-develop-2": "2.x-dev"
+        }
     }
 }

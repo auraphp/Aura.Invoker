@@ -27,7 +27,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
             'action'
         );
     }
-    
+
     public function testGetSetHasEtc()
     {
         $foo = function () {
@@ -151,6 +151,22 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         ];
         $actual = $this->dispatcher->__invoke($params);
         $expect = 'FOO BAR baz';
+        $this->assertSame($expect, $actual);
+    }
+
+    public function testInvokeClosure_directParams()
+    {
+        $params = [
+            'controller' => function ($params) {
+                // not using implode to know whether key is also got
+                return $params['foo'] . ' ' . $params['bar'] . ' ' . $params['baz'];
+            },
+            'foo' => 'foo',
+            'bar' => 'bar',
+            'baz' => 'baz',
+        ];
+        $expect = 'foo bar baz';
+        $actual = $this->dispatcher->__invoke($params);
         $this->assertSame($expect, $actual);
     }
 }

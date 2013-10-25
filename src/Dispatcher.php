@@ -85,8 +85,16 @@ class Dispatcher implements DispatcherInterface
      * 
      */
     public function __invoke($params = [])
-    {
+    {        
         $object = $this->getObjectByParams($params);
+        // type cast params to array
+        $params = (array) $params;
+        if (! isset($params['params'])) {
+            $key = $this->getObjectParam();
+            // unset the controller, probably a closure
+            unset($params[$key]);
+            $params['params'] = $params;
+        }
         return $this->dispatch($object, $params);
     }
     
@@ -104,7 +112,7 @@ class Dispatcher implements DispatcherInterface
      * 
      */
     protected function dispatch($object, $params = [])
-    {
+    {        
         $method = $this->getMethodByParams($params);
         if (is_callable([$object, $method])) {
             // the object has the specified method

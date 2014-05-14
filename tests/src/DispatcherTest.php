@@ -4,9 +4,9 @@ namespace Aura\Dispatcher;
 class DispatcherTest extends \PHPUnit_Framework_TestCase
 {
     protected $dispatcher;
-    
+
     protected $objects;
-    
+
     protected function setUp()
     {
         $this->objects = [
@@ -18,38 +18,41 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
             },
             'invokable' => function () {
                 return new FakeInvokable;
+            },
+            'methodandinvoke' => function () {
+                return new FakeClassWithMethod;
             }
         ];
-        
+
         $this->dispatcher = new Dispatcher(
             $this->objects,
             'controller',
             'action'
         );
     }
-    
+
     public function testGetSetHasEtc()
     {
         $foo = function () {
             return new FakeBase;
         };
-        
+
         $this->assertFalse($this->dispatcher->hasObject('foo'));
-        
+
         $this->dispatcher->setObject('foo', $foo);
         $this->assertTrue($this->dispatcher->hasObject('foo'));
-        
+
         $actual = $this->dispatcher->getObject('foo');
         $this->assertInstanceOf('Closure', $actual);
-        
+
         $actual = $this->dispatcher->getObjects();
         $expect = array_merge($this->objects, ['foo' => $foo]);
         $this->assertSame($expect, $actual);
-        
+
         $bar = function () {
             return new FakeExtended;
         };
-        
+
         $this->dispatcher->addObjects(['bar' => $bar]);
         $actual = $this->dispatcher->getObjects();
         $expect = array_merge($this->objects, [
@@ -57,36 +60,36 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
             'bar' => $bar,
         ]);
         $this->assertSame($expect, $actual);
-        
+
         $this->setExpectedException('Aura\Dispatcher\Exception\ObjectNotDefined');
         $this->dispatcher->getObject('NoSuchCallable');
     }
-    
+
     public function testParams()
     {
         $this->dispatcher->setObjectParam('foo');
         $actual = $this->dispatcher->getObjectParam();
         $this->assertSame('foo', $actual);
-        
+
         $this->dispatcher->setMethodParam('bar');
         $actual = $this->dispatcher->getMethodParam();
         $this->assertSame('bar', $actual);
     }
-    
+
     public function testDispatch_objectNotSpecified()
     {
         $params = [];
         $this->setExpectedException('Aura\Dispatcher\Exception\ObjectNotSpecified');
         $this->dispatcher->__invoke($params);
     }
-    
+
     public function testDispatch_objectNotDefined()
     {
         $params = ['controller' => 'undefined_object'];
         $this->setExpectedException('Aura\Dispatcher\Exception\ObjectNotDefined');
         $this->dispatcher->__invoke($params);
     }
-    
+
     public function testDispatch_factory()
     {
         $params = [
@@ -99,8 +102,8 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $expect = 'FOO BAR baz';
         $this->assertSame($expect, $actual);
     }
-    
-    
+
+
     public function testDispatch_factoryInParams()
     {
         $params = [
@@ -115,7 +118,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $expect = 'FOO BAR baz';
         $this->assertSame($expect, $actual);
     }
-    
+
     public function testDispatch_closure()
     {
         $params = [
@@ -127,7 +130,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $expect = 'FOO BAR baz';
         $this->assertSame($expect, $actual);
     }
-    
+
     public function testDispatch_closureInParams()
     {
         $params = [
@@ -141,7 +144,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $expect = 'FOO BAR baz';
         $this->assertSame($expect, $actual);
     }
-    
+
     public function testDispatch_invokableObject()
     {
         $params = [
@@ -153,7 +156,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $expect = 'FOO BAR baz';
         $this->assertSame($expect, $actual);
     }
-    
+
     public function testDispatch_namedObject()
     {
         $params = [
@@ -162,6 +165,17 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         ];
         $actual = $this->dispatcher->__invoke($params, 'invokable');
         $expect = 'FOO BAR baz';
+        $this->assertSame($expect, $actual);
+    }
+
+    public function testMethodExistsInvokable()
+    {
+        $params = [
+            'action' => 'someAction',
+            'controller' => 'methodandinvoke'
+        ];
+        $actual = $this->dispatcher->__invoke($params);
+        $expect = 'Hello World!';
         $this->assertSame($expect, $actual);
     }
 }

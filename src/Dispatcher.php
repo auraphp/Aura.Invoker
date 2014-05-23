@@ -103,7 +103,7 @@ class Dispatcher implements DispatcherInterface
      * with the dispatchable method, a closure, or an invokable object,
      * recursively to that result with the same params.
      * 
-     * @param object|callable $object Dispatch to this object.
+     * @param mixed $object Dispatch to this object.
      * 
      * @param array|ArrayAccess $params Params for the invocation.
      * 

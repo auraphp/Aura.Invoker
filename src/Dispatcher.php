@@ -232,7 +232,7 @@ class Dispatcher implements DispatcherInterface
      * 
      * @param string $name The name.
      * 
-     * @param object $object The dispatchable object.
+     * @param object|callable $object The dispatchable object.
      * 
      */
     public function setObject($name, $object)
@@ -260,7 +260,7 @@ class Dispatcher implements DispatcherInterface
      * 
      * @param string $name The name of the dispatchable object.
      * 
-     * @return object
+     * @return object|callable
      * 
      */
     public function getObject($name)
@@ -280,7 +280,7 @@ class Dispatcher implements DispatcherInterface
      * 
      * @param array|ArrayAccess $params Params for the invocation.
      * 
-     * @return object The dispatchable object.
+     * @return object|callable The dispatchable object.
      * 
      */
     public function getObjectByParams($params)

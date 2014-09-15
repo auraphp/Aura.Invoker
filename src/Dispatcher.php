@@ -119,9 +119,6 @@ class Dispatcher implements DispatcherInterface
         } elseif ($object instanceof Closure) {
             // the object is a closure proper
             $result = $this->invokeClosure($object, $params);
-        } elseif (is_object($object) && is_callable($object)) {
-            // the object is invokable
-            $result = $this->invokeMethod($object, '__invoke', $params);
         } else {
             // cannot dispatch any further; end recursion and return as-is
             return $object;
@@ -320,5 +317,7 @@ class Dispatcher implements DispatcherInterface
         if ($this->method_param && isset($params[$this->method_param])) {
             return $params[$this->method_param];
         }
+
+        return '__invoke';
     }
 }

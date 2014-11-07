@@ -42,13 +42,19 @@ trait InvokeMethodTrait
     protected function invokeMethod($object, $method, $params = [])
     {
         // is the method defined?
-        if (! method_exists($object, $method)) {
+        if (! is_callable([$object, $method])) {
             $message = get_class($object) . '::' . $method;
             throw new Exception\MethodNotDefined($message);
         }
 
         // reflect on the object method
-        $reflect = new ReflectionMethod($object, $method);
+        try {
+            $reflect = new ReflectionMethod($object, $method);
+        } catch (\ReflectionException $e) {
+            // It doesn't have that method explicitly... if it has call, then this becomes easy!
+            $reflect = new ReflectionMethod($object, '__call');
+            return $object->__call($method, $params);
+        }
 
         // check accessibility from $this to honor protected/private methods
         $accessible = true;

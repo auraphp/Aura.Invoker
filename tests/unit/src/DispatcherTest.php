@@ -180,25 +180,25 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 
-	public function testMethodNotDefined()
-	{
-		$params = [
-			'action' => 'missingMethod',
-			'controller' => 'factory'
-		];
+    public function testMethodNotDefined()
+    {
+        $params = [
+            'action' => 'missingMethod',
+            'controller' => 'factory'
+        ];
 
-		$this->setExpectedException('Aura\Dispatcher\Exception\MethodNotDefined');
-		$actual = $this->dispatcher->__invoke($params);
-	}
+        $this->setExpectedException('Aura\Dispatcher\Exception\MethodNotDefined');
+        $actual = $this->dispatcher->__invoke($params);
+    }
 
-	public function testMethodNotAccessible()
-	{
-		$params = [
-			'action' => 'privateMethod',
-			'controller' => 'factory'
-		];
+    public function testMethodNotAccessible()
+    {
+        $params = [
+            'action' => 'privateMethod',
+            'controller' => 'factory'
+        ];
 
-		$this->setExpectedException('Aura\Dispatcher\Exception\MethodNotAccessible');
-		$actual = $this->dispatcher->__invoke($params);
-	}
+        $this->setExpectedException('Aura\Dispatcher\Exception\MethodNotAccessible');
+        $actual = $this->dispatcher->__invoke($params);
+    }
 }

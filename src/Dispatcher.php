@@ -107,7 +107,7 @@ class Dispatcher implements DispatcherInterface
      *
      * @param array|ArrayAccess $params Params for the invocation.
      *
-     * @return The first non-dispatchable result.
+     * @return mixed The first non-dispatchable result.
      *
      */
     protected function dispatch($object, $params = [])

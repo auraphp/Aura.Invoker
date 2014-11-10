@@ -12,6 +12,7 @@ namespace Aura\Dispatcher;
 
 use Aura\Dispatcher\Exception;
 use ReflectionMethod;
+use Reflection;
 
 /**
  *
@@ -63,6 +64,9 @@ trait InvokeMethodTrait
 
         // is the method accessible by $this?
         if (! $accessible) {
+            if (! isset($access)) {
+                $access = implode(' ', Reflection::getModifierNames($reflect->getModifiers()));
+            }
             $message = get_class($object) . "::$method is $access";
             throw new Exception\MethodNotAccessible($message);
         }

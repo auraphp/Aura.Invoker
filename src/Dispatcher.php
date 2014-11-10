@@ -122,6 +122,9 @@ class Dispatcher implements DispatcherInterface
         } elseif (is_object($object) && is_callable($object)) {
             // the object is invokable
             $result = $this->invokeMethod($object, '__invoke', $params);
+        } elseif (is_object($object) && $method) {
+            // there is a method in params
+            $result = $this->invokeMethod($object, $method, $params);
         } else {
             // cannot dispatch any further; end recursion and return as-is
             return $object;

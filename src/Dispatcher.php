@@ -107,7 +107,7 @@ class Dispatcher implements DispatcherInterface
      *
      * @param array|ArrayAccess $params Params for the invocation.
      *
-     * @return The first non-dispatchable result.
+     * @return mixed The first non-dispatchable result.
      *
      */
     protected function dispatch($object, $params = [])
@@ -122,6 +122,9 @@ class Dispatcher implements DispatcherInterface
         } elseif (is_object($object) && is_callable($object)) {
             // the object is invokable
             $result = $this->invokeMethod($object, '__invoke', $params);
+        } elseif (is_object($object) && $method) {
+            // there is a method in params
+            $result = $this->invokeMethod($object, $method, $params);
         } else {
             // cannot dispatch any further; end recursion and return as-is
             return $object;
